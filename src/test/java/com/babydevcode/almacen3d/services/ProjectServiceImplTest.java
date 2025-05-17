@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,12 +29,19 @@ public class ProjectServiceImplTest {
 
     private List<ProjectEntity> projectMock;
 
+    private ProjectEntity projecEntityMock;
+
     @BeforeEach
     void setup() {
         projectMock = Arrays.asList(
             new ProjectEntity(),
             new ProjectEntity()
         );
+
+        projecEntityMock = new ProjectEntity();
+        projecEntityMock.setId(1L);
+        projecEntityMock.setProjectName("Batalla Naval");
+        projecEntityMock.setProjectPrice(2000.00);
     }
 
     @Test
@@ -49,5 +57,23 @@ public class ProjectServiceImplTest {
         assertEquals(2, result.size());
         verify(projectRepository).findAll();
         
+    }
+
+    @Test
+    void testGetProject() {
+        
+        //Given
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(projecEntityMock));
+
+        //When
+        ProjectDto projectDto = projectService.getProject(1L);
+
+        //Then
+        assertEquals(1L, projectDto.getId());
+        assertEquals("Batalla Naval", projectDto.getProjectName());
+        assertEquals(2000.00, projectDto.getProjectPrice());
+
+        verify(projectRepository).findById(1L);
+
     }
 }

@@ -21,18 +21,18 @@ public class ProjectServiceImpl implements ProjectService {
         List<ProjectEntity> projectEntities = projectRepository.findAll();
         List<ProjectDto> projectDtos = new ArrayList<>();
         for (ProjectEntity projectEntity : projectEntities) {
-            ProjectDto projectDto = new ProjectDto();
-            projectDto.setId(projectEntity.getId());
-            projectDto.setProjectName(projectEntity.getProjectName());
-            projectDto.setProjectPrice(projectEntity.getProjectPrice());
-            projectDtos.add(projectDto);
+            projectDtos.add(mapperEntityToDto(projectEntity));
         }
         return projectDtos;
     }
 
     @Override
-    public ProjectDto getProject(Long id) {
+    public ProjectDto getProject(final Long id) {
         ProjectEntity projectEntity = projectRepository.findById(id).orElseThrow();
+        return mapperEntityToDto(projectEntity);
+    }
+
+    private ProjectDto mapperEntityToDto(final ProjectEntity projectEntity) {
         ProjectDto projectDto = new ProjectDto();
         projectDto.setId(projectEntity.getId());
         projectDto.setProjectName(projectEntity.getProjectName());
