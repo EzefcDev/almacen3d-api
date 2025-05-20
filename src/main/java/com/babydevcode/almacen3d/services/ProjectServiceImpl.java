@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.babydevcode.almacen3d.Entities.ProjectEntity;
 import com.babydevcode.almacen3d.dtos.ProjectDto;
+import com.babydevcode.almacen3d.exception.ProductNotFoundException;
 import com.babydevcode.almacen3d.repositories.ProjectRepository;
 
 @Service
@@ -28,7 +29,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ProjectDto getProject(final Long id) {
-        ProjectEntity projectEntity = projectRepository.findById(id).orElseThrow();
+        ProjectEntity projectEntity = projectRepository.findById(id)
+            .orElseThrow(() -> new ProductNotFoundException("No se encontro el producto con el id: " + id));
         return mapperEntityToDto(projectEntity);
     }
 

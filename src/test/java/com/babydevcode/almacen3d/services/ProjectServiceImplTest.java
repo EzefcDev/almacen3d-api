@@ -1,6 +1,7 @@
 package com.babydevcode.almacen3d.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -13,12 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.babydevcode.almacen3d.Entities.ProjectEntity;
 import com.babydevcode.almacen3d.dtos.ProjectDto;
+import com.babydevcode.almacen3d.exception.ProductNotFoundException;
 import com.babydevcode.almacen3d.repositories.ProjectRepository;
 
+import net.bytebuddy.pool.TypePool.Empty;
+
 @SpringBootTest
+@ActiveProfiles("test")
 public class ProjectServiceImplTest {
 
     @MockBean
@@ -76,4 +82,16 @@ public class ProjectServiceImplTest {
         verify(projectRepository).findById(1L);
 
     }
+
+    @Test
+    void testGetProjectEmpty() {
+        
+        //Given
+        when(projectRepository.findById(4L)).thenReturn(Optional.empty());
+
+        assertThrows(ProductNotFoundException.class, () -> {
+            projectService.getProject(4L);
+        });
+    }
+
 }

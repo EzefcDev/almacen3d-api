@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.babydevcode.almacen3d.dtos.ProjectDto;
+import com.babydevcode.almacen3d.exception.ProductNotFoundException;
 import com.babydevcode.almacen3d.services.ProjectService;
 
 @WebMvcTest(controllers = ProjectController.class)
@@ -79,6 +80,18 @@ class ProjectControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.projectName").value("Batalla naval"));
         
         verify(projectService).getProject(1L);
+    }
+
+    @Test
+    public void getProduct_ReturnsNotFound_WhenProductDoesNotExist() throws Exception {
+
+        //Given
+        when(projectService.getProject(1L)).thenThrow(new ProductNotFoundException("Producto no encontrado"));
+
+        //When
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/1"))
+        //Then
+            .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
     
 }
